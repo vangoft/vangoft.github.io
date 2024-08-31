@@ -3,7 +3,7 @@ body {
     flex-direction: column;
     align-items: center;
     height: 100vh;
-    background-color: #e0f5ff;
+    background-color: #4cc4d8;
     margin: 0;
     position: relative;
     overflow: hidden;
@@ -36,7 +36,7 @@ body {
     top: 0;
     font-size: 20px;
     font-family: Arial, sans-serif;
-    color: #a3e4ff;
+    color: #70def2;
     text-shadow: 3px 3px 0px #3C2117;
     animation: rain 3s linear infinite;
     opacity: 0;
@@ -73,8 +73,8 @@ body {
     flex: 1;
     padding: 20px;
     margin-right : 5px;
-    background-color: #abe0f9    ;
-    border: 4px solid #85c2df;
+    background-color: #56dbf2    ;
+    border: 4px solid #307a87;
     border-radius: 10px;
     overflow-y: auto; /* Enable vertical scrolling */
 }
@@ -83,12 +83,12 @@ body {
     flex: 1;
     padding: 20px;
     margin-left : 5px;
-    background-color: #abe0f9;
+    background-color: #56dbf2;
     display: flex;
     flex-direction: column;
     align-items: center;
     border-radius: 10px;
-    border: 4px solid #85c2df;
+    border: 4px solid #307a87;
     justify-content: center;
 }
 .right-section h1 {
@@ -120,7 +120,7 @@ body {
     height: auto;
     cursor: pointer;
     border-radius: 5px;
-    border: 2px solid #859ca6;
+    border: 2px solid #307a87;
     transition: background-color 0.3s ease; /* Add transition effect */
 }
 
@@ -139,7 +139,7 @@ body {
     background-color: #e0f5ff;
     width: 95%;
     border-radius: 5px;
-    border: 2px solid #859ca6;  
+    border: 2px solid #307a87;  
     border-radius: 10px;
     margin-bottom: 10px;
 }
@@ -150,7 +150,7 @@ body {
     cursor: pointer;
     background-color: #e0f5ff;
     color: black;
-    border: 2px solid #859ca6; 
+    border: 2px solid #307a87; 
     border-radius: 5px;
     transition: background-color 0.3s ease; /* Add transition effect */
 }
