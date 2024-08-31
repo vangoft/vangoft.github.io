@@ -54,8 +54,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const originalHeight = 500;
 
         context.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+
+        // Draw the background without shadow
         const background = categories.find(category => category.id === 'background').image;
-        if (background) context.drawImage(background, 0, 0, originalWidth, originalHeight);
+        if (background) {
+            context.shadowColor = 'transparent';  // Ensure no shadow for background
+            context.drawImage(background, 0, 0, originalWidth, originalHeight);
+        }
+
+        // Set shadow properties for all other elements
+        context.shadowColor = 'rgba(0, 0, 0, 0.666)'; // Soft black shadow
+        context.shadowBlur = 10; // Blur level for the soft shadow
+        context.shadowOffsetX = -5; // Horizontal shadow offset to the left
+        context.shadowOffsetY = 0; // No vertical offset
 
         // const aura = categories.find(category => category.id === 'aura').image;
         // if (aura) context.globalAlpha = 0.66;
@@ -83,6 +94,12 @@ document.addEventListener("DOMContentLoaded", () => {
         //     context.drawImage(aura, 0, 0, originalWidth, originalHeight);
         //     context.globalAlpha = 1.0; // Reset alpha to default
         // }
+
+        // Reset shadow settings to avoid affecting non-image text
+        context.shadowColor = 'transparent';
+        context.shadowBlur = 0;
+        context.shadowOffsetX = 0;
+        context.shadowOffsetY = 0;
 
         drawText();
     };
