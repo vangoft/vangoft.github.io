@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // context.globalAlpha = 1.0;
         context.drawImage(baseImg, 0, 0, originalWidth, originalHeight);
 
-        const drawingOrder = ['clothing', 'face', 'hair','glasses', 'hat', 'traits'];
+        const drawingOrder = ['clothing', 'face', 'glasses', 'hair', 'hat', 'traits'];
         drawingOrder.forEach(categoryId => {
             const category = categories.find(category => category.id === categoryId);
             if (category && category.image) {
