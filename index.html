@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$HENRY Meme Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" href="#">
+</head>
+<body>
+    <div class="rain-container"></div>
+    <div class="container">
+        <div class="left-section">
+            <div class="options">
+                <div class="category">
+                    <h3>Background</h3>
+                    <div id="background-options"></div>
+                </div>
+                <div class="category">
+                    <h3>Hat</h3>
+                    <div id="hat-options"></div>
+                </div>
+                <div class="category">
+                    <h3>Hair</h3>
+                    <div id="hair-options"></div>
+                </div>
+                <div class="category">
+                    <h3>Face</h3>
+                    <div id="face-options"></div>
+                </div>
+                <div class="category">
+                    <h3>Glasses</h3>
+                    <div id="glasses-options"></div>
+                </div>
+                <div class="category">
+                    <h3>Clothing</h3>
+                    <div id="clothing-options"></div>
+                </div>
+                <div class="category">
+                    <h3>Traits</h3>
+                    <div id="traits-options"></div>
+                </div>
+            </div>
+        </div>
+        <div class="right-section">
+            <h1>Preview</h1>
+            <div class="preview-container">
+                <canvas id="preview-canvas" width="500" height="500"></canvas>
+                <div class="button-container">
+                    <button id="download-btn">Download Meme</button>
+                    <button id="reset-btn">Reset</button>
+                </div>
+                <div class="text-inputs">
+                    <input type="text" id="top-text" placeholder="Top captcha">
+                    <input type="text" id="bottom-text" placeholder="Bottom captcha">
+                    <button id="add-text-btn">Add Captcha</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
