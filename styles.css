@@ -144,26 +144,31 @@ body {
     margin-bottom: 10px;
 }
 
-#download-btn, #reset-btn, #add-text-btn {
+#download-btn, #reset-btn{
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #e0f5ff;
-    color: black;
-    border: 2px solid #307a87; 
+    background-color: #007bff;
+    color: white;
+    border: none;
     border-radius: 5px;
     transition: background-color 0.3s ease; /* Add transition effect */
 }
 
 #download-btn:hover, #reset-btn:hover, #add-text-btn:hover {
-    background-color: #70a49e;
+    background-color: #0056b3;
 }
 
 .text-inputs {
     display: flex;
-    flex-direction: column;
-    gap: 5px; /* Add space between input fields */
+    gap: 10px; /* Space between input fields and the button */
     margin-top: 10px;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column; /* Stack inputs one under the other */
+    flex: 1; /* Take up remaining space */
 }
 
 .text-inputs input {
@@ -171,6 +176,32 @@ body {
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+    width: 100%; /* Make inputs fill the container width */
+}
+
+#add-text-btn {
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    padding: 0 20px; /* Ensure padding is only horizontal */
+    height: auto; /* Reset auto height */
+    flex-grow: 0; /* Prevent button from growing */
+    align-self: stretch; /* Make button take full height of the flex container */
+    box-sizing: border-box; /* Include padding and border in total height calculation */
+}
+
+#add-text-btn:hover {
+    background-color: #0056b3;
+}
+
+
+h1,h2,h3,h4,h5 {
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Media query for responsive layout */
@@ -188,7 +219,8 @@ body {
 
     .right-section h1 {
         font-size: 1.25em; /* Reduce font size to half */
-        margin-top: -5px;
+        margin-top: -20px;
+        visibility: hidden;
     }
     
     .left-section {
@@ -199,13 +231,20 @@ body {
 
     .preview-container canvas {
         background-color: #e0f5ff;
-        width: 95%;
+        width: 85%;
         border-radius: 5px;
         border: 2px solid #859ca6;  
         border-radius: 10px;
         margin: 5px;
         margin-top: -10px;
     }
+
+    .text-inputs {
+        display: flex;
+        gap: 10px; /* Space between input fields and the button */
+        margin-top: 5px;
+    }
+   
 
     .button-container {
         flex-direction: row; /* Place buttons next to each other */
