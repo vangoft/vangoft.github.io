@@ -21,10 +21,10 @@ let dragStartY = 0;
 let imageScale = 2; // Initial scale factor
 
 // Text bounding box dimensions
-const TEXT_AREA_START_X = 30;
-const TEXT_AREA_START_Y = 660;
+const TEXT_AREA_START_X = 20;
+const TEXT_AREA_START_Y = 700;
 const TEXT_AREA_END_X = 660;
-const TEXT_AREA_END_Y = 900;
+const TEXT_AREA_END_Y = 950;
 const TEXT_AREA_WIDTH = TEXT_AREA_END_X - TEXT_AREA_START_X;
 const TEXT_AREA_HEIGHT = TEXT_AREA_END_Y - TEXT_AREA_START_Y;
 
@@ -91,18 +91,18 @@ function drawMeme() {
     ctx.fillStyle = 'white';
     ctx.strokeStyle = 'white';
     ctx.lineWidth = 2;
-    ctx.textAlign = 'left';
+    ctx.textAlign = 'center';
 
     const lineHeight = fontSize + 10;
-    let y = TEXT_AREA_START_Y;
+    const totalTextHeight = lines.length * lineHeight;
+    let startY = TEXT_AREA_START_Y + (TEXT_AREA_HEIGHT - totalTextHeight) / 2;
 
     lines.forEach((line) => {
-        if (y + lineHeight <= TEXT_AREA_END_Y) {
-            ctx.font = `${fontSize}px Arial`;
-            ctx.fillText(line, TEXT_AREA_START_X, y);
-            ctx.strokeText(line, TEXT_AREA_START_X, y);
-            y += lineHeight;
-        }
+        const textX = TEXT_AREA_START_X + TEXT_AREA_WIDTH / 2;
+        ctx.font = `${fontSize}px Arial`;
+        ctx.fillText(line, textX, startY);
+        ctx.strokeText(line, textX, startY);
+        startY += lineHeight;
     });
 }
 
@@ -161,7 +161,6 @@ uploadImage.addEventListener('change', (e) => {
 
 scaleSlider.addEventListener('input', (e) => {
     imageScale = e.target.value;
-    //scaleValue.textContent = `Scale: ${imageScale}`;
     drawMeme();
 });
 
@@ -207,8 +206,8 @@ canvas.addEventListener('touchcancel', handleDragEnd);
 resetButton.addEventListener('click', () => {
     memeText.value = '';
     uploadedImage = null;
-    uploadedImageX = 374;
-    uploadedImageY = 900;
+    uploadedImageX = 30;
+    uploadedImageY = 1000;
     uploadedImageWidth = 0;
     uploadedImageHeight = 0;
     imageScale = 2;
