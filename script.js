@@ -16,6 +16,8 @@ let uploadedImageY = 1000;
 let uploadedImageWidth = 0;
 let uploadedImageHeight = 0;
 let isDragging = false;
+let dragStartX = 0;
+let dragStartY = 0;
 let imageScale = 2; // Initial scale factor
 
 // Text bounding box dimensions
@@ -115,6 +117,26 @@ function isMouseOnImage(x, y) {
     );
 }
 
+function handleDragStart(x, y) {
+    if (uploadedImage && isMouseOnImage(x, y)) {
+        isDragging = true;
+        dragStartX = x - uploadedImageX;
+        dragStartY = y - uploadedImageY;
+    }
+}
+
+function handleDragMove(x, y) {
+    if (isDragging) {
+        uploadedImageX = x - dragStartX;
+        uploadedImageY = y - dragStartY;
+        drawMeme();
+    }
+}
+
+function handleDragEnd() {
+    isDragging = false;
+}
+
 baseImage.onload = drawMeme;
 
 memeText.addEventListener('input', drawMeme);
@@ -147,27 +169,40 @@ canvas.addEventListener('mousedown', (e) => {
     const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-
-    if (uploadedImage && isMouseOnImage(mouseX, mouseY)) {
-        isDragging = true;
-    }
+    handleDragStart(mouseX, mouseY);
 });
 
 canvas.addEventListener('mousemove', (e) => {
-    if (isDragging) {
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-
-        uploadedImageX = mouseX - (uploadedImageWidth * imageScale) / 2;
-        uploadedImageY = mouseY - (uploadedImageHeight * imageScale) / 2;
-        drawMeme();
-    }
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    handleDragMove(mouseX, mouseY);
 });
 
-canvas.addEventListener('mouseup', () => {
-    isDragging = false;
+canvas.addEventListener('mouseup', handleDragEnd);
+canvas.addEventListener('mouseleave', handleDragEnd);
+
+// Add touch events for mobile devices
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // Prevent scrolling while interacting
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const touchX = (touch.clientX - rect.left) * (canvas.width / rect.width);
+    const touchY = (touch.clientY - rect.top) * (canvas.height / rect.height);
+    handleDragStart(touchX, touchY);
 });
+
+canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault(); // Prevent scrolling while dragging
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const touchX = (touch.clientX - rect.left) * (canvas.width / rect.width);
+    const touchY = (touch.clientY - rect.top) * (canvas.height / rect.height);
+    handleDragMove(touchX, touchY);
+});
+
+canvas.addEventListener('touchend', handleDragEnd);
+canvas.addEventListener('touchcancel', handleDragEnd);
 
 resetButton.addEventListener('click', () => {
     memeText.value = '';
