@@ -1,196 +1,189 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const previewCanvas = document.getElementById("preview-canvas");
-    const context = previewCanvas.getContext("2d");
+const canvas = document.getElementById('memeCanvas');
+const ctx = canvas.getContext('2d');
+const memeText = document.getElementById('memeText');
+const uploadImage = document.getElementById('uploadImage');
+const resetButton = document.getElementById('resetButton');
+const downloadButton = document.getElementById('downloadButton');
+const scaleSlider = document.getElementById('scaleSlider');
+const scaleValue = document.getElementById('scaleValue');
 
-    // Set canvas dimensions to original image size
-    previewCanvas.width = 500;
-    previewCanvas.height = 500;
+const baseImage = new Image();
+baseImage.src = 'base.jpg';
 
-    const categories = [
-        { id: 'background', name: 'Background', options: null, image: null },
-        { id: 'hat', name: 'Hat', options: null, image: null },
-        { id: 'hair', name: 'Hair', options: null, image: null },
-        { id: 'face', name: 'Face', options: null, image: null },
-        { id: 'glasses', name: 'Glasses', options: null, image: null },       
-        { id: 'clothing', name: 'Clothing', options: null, image: null },
-        { id: 'traits', name: 'Traits', options: null, image: null },     
-    ];
+let uploadedImage = null;
+let uploadedImageX = 30;
+let uploadedImageY = 1000;
+let uploadedImageWidth = 0;
+let uploadedImageHeight = 0;
+let isDragging = false;
+let imageScale = 2; // Initial scale factor
 
-    const baseImg = new Image();
-    baseImg.src = "base/base.png";
-    baseImg.onload = () => {
-        drawCanvas();
-    };
+// Text bounding box dimensions
+const TEXT_AREA_START_X = 30;
+const TEXT_AREA_START_Y = 660;
+const TEXT_AREA_END_X = 660;
+const TEXT_AREA_END_Y = 900;
+const TEXT_AREA_WIDTH = TEXT_AREA_END_X - TEXT_AREA_START_X;
+const TEXT_AREA_HEIGHT = TEXT_AREA_END_Y - TEXT_AREA_START_Y;
 
-    const loadImages = (path, container, callback) => {
-        fetch(`${path}/${path}.json`)
-            .then(response => response.json())
-            .then(images => {
-                images.forEach((image, index) => {
-                    const previewImg = document.createElement("img");
-                    // Add "p" only to the first image
-                    previewImg.src = index === 0 ? `${path}/${image}p.png` : `${path}/${image}.png`;
-                    previewImg.alt = image;
-                    previewImg.addEventListener("click", () => callback(image));
-                    container.appendChild(previewImg);
-                });
-            });
-    };
+function wrapTextToArea(text, fontSize, areaWidth) {
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = '';
 
-    categories.forEach(category => {
-        category.options = document.getElementById(`${category.id}-options`);
-        const setImage = (image) => {
-            category.image = new Image();
-            category.image.src = `${category.id}/${image}.png`;
-            category.image.onload = () => {
-                drawCanvas();
-            };
-        };
-        loadImages(category.id, category.options, setImage);
+    ctx.font = `${fontSize}px Arial`;
+
+    words.forEach((word) => {
+        const testLine = currentLine + word + ' ';
+        const testWidth = ctx.measureText(testLine).width;
+        if (testWidth > areaWidth && currentLine !== '') {
+            lines.push(currentLine);
+            currentLine = word + ' ';
+        } else {
+            currentLine = testLine;
+        }
     });
 
-    const drawCanvas = () => {
-        const originalWidth = 500;
-        const originalHeight = 500;
-
-        context.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-
-        // Draw the background without shadow
-        const background = categories.find(category => category.id === 'background').image;
-        if (background) {
-            context.shadowColor = 'transparent';  // Ensure no shadow for background
-            context.drawImage(background, 0, 0, originalWidth, originalHeight);
-        }
-
-        // Set shadow properties for all other elements
-        context.shadowColor = 'rgba(0, 0, 0, 0.666)'; // Soft black shadow
-        context.shadowBlur = 10; // Blur level for the soft shadow
-        context.shadowOffsetX = -5; // Horizontal shadow offset to the left
-        context.shadowOffsetY = 0; // No vertical offset
-
-        // const aura = categories.find(category => category.id === 'aura').image;
-        // if (aura) context.globalAlpha = 0.66;
-        // if (aura) context.drawImage(aura, 0, 0, originalWidth, originalHeight);
-
-        // context.globalAlpha = 1.0;
-        context.drawImage(baseImg, 0, 0, originalWidth, originalHeight);
-
-        const drawingOrder = ['clothing', 'face', 'glasses', 'hair', 'hat', 'traits'];
-        drawingOrder.forEach(categoryId => {
-            const category = categories.find(category => category.id === categoryId);
-            if (category && category.image) {
-                let x = 0;
-                let y = 0;
-                let width = originalWidth;
-                let height = originalHeight;
-
-                context.drawImage(category.image, x, y, width, height);
-            }
-        });
-
-        // Draw the aura again with 33% opacity
-        // if (aura) {
-        //     context.globalAlpha = 0.18;
-        //     context.drawImage(aura, 0, 0, originalWidth, originalHeight);
-        //     context.globalAlpha = 1.0; // Reset alpha to default
-        // }
-
-        // Reset shadow settings to avoid affecting non-image text
-        context.shadowColor = 'transparent';
-        context.shadowBlur = 0;
-        context.shadowOffsetX = 0;
-        context.shadowOffsetY = 0;
-
-        drawText();
-    };
-
-    const downloadMeme = () => {
-        const link = document.createElement("a");
-        link.download = 'meme.png';
-        link.href = previewCanvas.toDataURL();
-        link.click();
-    };
-
-    const resetCanvas = () => {
-        categories.forEach(category => {
-            category.image = null;
-        });
-        drawCanvas();
-    };
-
-    document.getElementById("download-btn").addEventListener("click", downloadMeme);
-    document.getElementById("reset-btn").addEventListener("click", resetCanvas);
-
-    // Create the rain effect
-    const rainContainer = document.querySelector(".rain-container");
-    for (let i = 0; i < 100; i++) {
-        const rainDrop = document.createElement("div");
-        rainDrop.className = "rain";
-        rainDrop.textContent = "$HENRY";
-        rainDrop.style.left = `${Math.random() * 100}vw`;
-        rainDrop.style.animationDelay = `${Math.random() * 3}s`;
-        rainContainer.appendChild(rainDrop);
+    if (currentLine) {
+        lines.push(currentLine);
     }
 
-    // Calculate font size to fit text within the canvas width
-    const calculateFontSize = (text, maxWidth, maxFontSize) => {
-        let fontSize = maxFontSize;
-        do {
-            context.font = `${fontSize}px 'Arial'`;
-            if (context.measureText(text).width <= maxWidth) {
-                break;
-            }
-            fontSize--;
-        } while (fontSize > 10); // Minimum font size to avoid text becoming too small
-        return fontSize;
-    };
+    return lines;
+}
 
-    // Add text to canvas
-    const drawText = () => {
-        const topText = document.getElementById("top-text").value;
-        const bottomText = document.getElementById("bottom-text").value;
+function fitTextToArea(text, initialFontSize, areaWidth, areaHeight) {
+    let fontSize = initialFontSize;
+    let lines;
+    let lineHeight;
 
-        context.lineWidth = 2;
-        context.textAlign = "center";
-
-        const maxWidth = previewCanvas.width - 40; // Padding to ensure text doesn't touch edges
-        const maxFontSize = 120;
-
-        if (topText) {
-            const topFontSize = calculateFontSize(topText, maxWidth, maxFontSize);
-
-            context.fillStyle = "black";
-            context.strokeStyle = "black";
-            context.font = `${topFontSize}px 'Arial'`;
-            context.fillText(topText, previewCanvas.width / 2, topFontSize);
-            context.strokeText(topText, previewCanvas.width / 2, topFontSize);
-
-
-            context.fillStyle = "white";
-            context.strokeStyle = "white";
-            context.font = `${topFontSize}px 'Arial'`;
-            context.fillText(topText, (previewCanvas.width / 2)-5, topFontSize-5);
-            context.strokeText(topText, (previewCanvas.width / 2)-5, topFontSize-5); 
-
+    do {
+        ctx.font = `${fontSize}px Arial`;
+        lines = wrapTextToArea(text, fontSize, areaWidth);
+        lineHeight = fontSize + 10;
+        if (lines.length * lineHeight <= areaHeight) {
+            break;
         }
+        fontSize--;
+    } while (fontSize > 10);
 
-        if (bottomText) {
-            const bottomFontSize = calculateFontSize(bottomText, maxWidth, maxFontSize);
+    return { fontSize, lines };
+}
 
-            context.fillStyle = "black";
-            context.strokeStyle = "black";
-            context.font = `${bottomFontSize}px 'Arial'`;
-            context.fillText(bottomText, previewCanvas.width / 2, previewCanvas.height - bottomFontSize / 2);
-            context.strokeText(bottomText, previewCanvas.width / 2, previewCanvas.height - bottomFontSize / 2);
+function drawMeme() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            context.fillStyle = "white";
-            context.strokeStyle = "white";
-            context.font = `${bottomFontSize}px 'Arial'`;
-            context.fillText(bottomText, (previewCanvas.width / 2)-5, (previewCanvas.height - bottomFontSize / 2)-5);
-            context.strokeText(bottomText, (previewCanvas.width / 2)-5, (previewCanvas.height - bottomFontSize / 2)-5);
+    // Draw base image
+    ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+
+    // Draw uploaded image
+    if (uploadedImage) {
+        const scaledWidth = uploadedImageWidth * imageScale;
+        const scaledHeight = uploadedImageHeight * imageScale;
+        ctx.drawImage(uploadedImage, uploadedImageX, uploadedImageY, scaledWidth, scaledHeight);
+    }
+
+    // Draw text within the bounding area
+    const text = memeText.value;
+    const { fontSize, lines } = fitTextToArea(text, 48, TEXT_AREA_WIDTH, TEXT_AREA_HEIGHT);
+
+    ctx.fillStyle = 'white';
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 2;
+    ctx.textAlign = 'left';
+
+    const lineHeight = fontSize + 10;
+    let y = TEXT_AREA_START_Y;
+
+    lines.forEach((line) => {
+        if (y + lineHeight <= TEXT_AREA_END_Y) {
+            ctx.font = `${fontSize}px Arial`;
+            ctx.fillText(line, TEXT_AREA_START_X, y);
+            ctx.strokeText(line, TEXT_AREA_START_X, y);
+            y += lineHeight;
         }
-    };
+    });
+}
 
-    document.getElementById("add-text-btn").addEventListener("click", drawCanvas);
+function isMouseOnImage(x, y) {
+    const scaledWidth = uploadedImageWidth * imageScale;
+    const scaledHeight = uploadedImageHeight * imageScale;
+    return (
+        x >= uploadedImageX &&
+        x <= uploadedImageX + scaledWidth &&
+        y >= uploadedImageY &&
+        y <= uploadedImageY + scaledHeight
+    );
+}
 
+baseImage.onload = drawMeme;
+
+memeText.addEventListener('input', drawMeme);
+
+uploadImage.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            uploadedImage = new Image();
+            uploadedImage.onload = () => {
+                const aspectRatio = uploadedImage.width / uploadedImage.height;
+                uploadedImageWidth = 200; // Default width
+                uploadedImageHeight = uploadedImageWidth / aspectRatio;
+                drawMeme();
+            };
+            uploadedImage.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+scaleSlider.addEventListener('input', (e) => {
+    imageScale = e.target.value;
+    //scaleValue.textContent = `Scale: ${imageScale}`;
+    drawMeme();
+});
+
+canvas.addEventListener('mousedown', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    if (uploadedImage && isMouseOnImage(mouseX, mouseY)) {
+        isDragging = true;
+    }
+});
+
+canvas.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        uploadedImageX = mouseX - (uploadedImageWidth * imageScale) / 2;
+        uploadedImageY = mouseY - (uploadedImageHeight * imageScale) / 2;
+        drawMeme();
+    }
+});
+
+canvas.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+resetButton.addEventListener('click', () => {
+    memeText.value = '';
+    uploadedImage = null;
+    uploadedImageX = 374;
+    uploadedImageY = 900;
+    uploadedImageWidth = 0;
+    uploadedImageHeight = 0;
+    imageScale = 2;
+    scaleSlider.value = 2;
+    drawMeme();
+});
+
+downloadButton.addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = '$CHANT-meme.jpg';
+    link.href = canvas.toDataURL('image/jpeg');
+    link.click();
 });
