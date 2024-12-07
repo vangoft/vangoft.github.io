@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>$CHANT Meme Generator</title>
+    <title>$CHANT Generator</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>$CHANT Meme Generator</h1>
     <div id="container">
         <div id="preview">
             <canvas id="memeCanvas" width="900" height="1280"></canvas>
@@ -15,9 +14,10 @@
         <div id="controls">
             <input type="text" id="memeText" placeholder="Enter your text" />
             <input type="file" id="uploadImage" accept="image/*" />
-            <label for="scaleSlider">Scale:</label>
-            <input type="range" id="scaleSlider" min="0.5" max="5" step="0.1" value="2" />
-            <span id="scaleValue"></span>
+            <div id="scaleControl">
+                <label for="scaleSlider">Scale:</label>
+                <input type="range" id="scaleSlider" min="0.5" max="5" step="0.1" value="2" />
+            </div>            
             <button id="resetButton">Reset</button>
             <button id="downloadButton">Download</button>
         </div>
