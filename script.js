@@ -88,20 +88,24 @@ function drawMeme() {
     const text = memeText.value;
     const { fontSize, lines } = fitTextToArea(text, 48, TEXT_AREA_WIDTH, TEXT_AREA_HEIGHT);
 
-    ctx.fillStyle = 'white';
-    ctx.strokeStyle = 'white';
-    ctx.lineWidth = 2;
-    ctx.textAlign = 'center';
-
     const lineHeight = fontSize + 10;
     const totalTextHeight = lines.length * lineHeight;
     let startY = TEXT_AREA_START_Y + (TEXT_AREA_HEIGHT - totalTextHeight) / 2;
 
     lines.forEach((line) => {
         const textX = TEXT_AREA_START_X + TEXT_AREA_WIDTH / 2;
+
+        // Draw shadow (text outline)
         ctx.font = `${fontSize}px Arial`;
-        ctx.fillText(line, textX, startY);
+        ctx.lineWidth = 8; // Thickness of the outline
+        ctx.strokeStyle = 'black';
+        ctx.textAlign = 'center';
         ctx.strokeText(line, textX, startY);
+
+        // Draw main text
+        ctx.fillStyle = 'white';
+        ctx.fillText(line, textX, startY);
+
         startY += lineHeight;
     });
 }
