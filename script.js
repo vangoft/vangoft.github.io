@@ -170,15 +170,15 @@ scaleSlider.addEventListener('input', (e) => {
 
 canvas.addEventListener('mousedown', (e) => {
     const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+    const mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const mouseY = (e.clientY - rect.top) * (canvas.width / rect.width);
     handleDragStart(mouseX, mouseY);
 });
 
 canvas.addEventListener('mousemove', (e) => {
     const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+    const mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const mouseY = (e.clientY - rect.top) * (canvas.width / rect.width);
     handleDragMove(mouseX, mouseY);
 });
 
